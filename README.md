@@ -10,6 +10,24 @@ It can retrieve the following:
 This program is not malicious in nature. It simply reads data, decrypts it if needed, and prints it to screen.
 Note: **Must Be Ran as Administrator to decrypt Passwords, Cookies, or Credit Cards.**
 
+## Update
+Updated for better Chromium browser support.
+Now Supports some browsers that don't use the exact same v20 encryption as Chrome.
+
+Now supports the following browsers: (in no particular order)
+
+* Arc
+* Vivaldi
+* Chrome
+* Chrome Beta
+* Chrome Dev
+* Edge
+* Brave
+* Chromium
+* DuckDuckGo (cookies only)
+* Opera
+* Opera-GX
+
 ## Compiling
 This is coded C# 4.8 and uses the following NuGet packages:
 * BouncyCastle.Cryptography 2.6.2
