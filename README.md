@@ -21,6 +21,7 @@ Now supports the following browsers: (in no particular order)
 * Chrome
 * Chrome Beta
 * Chrome Dev
+* Chrome Canary
 * Edge
 * Brave
 * Chromium
