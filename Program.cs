@@ -256,13 +256,13 @@ namespace chrome_v20_decryption_CSharp
                 ccMP = MasterPasswordType.v20,
                 rootPath = $"{local_appdata}\\Google\\Chrome Dev\\User Data"
             }},
-            //{ "google-chrome-canary", new Browser {
-            //    name = "google-chrome-canary",
-            //    loginsMP = MasterPasswordType.v20,
-            //    cookiesMP = MasterPasswordType.v20,
-            //    ccMP = MasterPasswordType.v20,
-            //    rootPath = $"{local_appdata}\\Google\\Chrome SxS\\User Data"
-            //}},
+            { "google-chrome-canary", new Browser {
+                name = "google-chrome-canary",
+                loginsMP = MasterPasswordType.v10,
+                cookiesMP = MasterPasswordType.v10,
+                ccMP = MasterPasswordType.v10,
+                rootPath = $"{local_appdata}\\Google\\Chrome SxS\\User Data"
+            }},
             { "microsoft-edge", new Browser {
                 name = "microsoft-edge",
                 loginsMP = MasterPasswordType.v10,
